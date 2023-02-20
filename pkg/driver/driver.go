@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	driverName = "file.cache.csi.aws.com"
+	driverName = "filecache.csi.aws.com"
 )
 
 var (

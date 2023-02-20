@@ -12,9 +12,8 @@ spec:
     - flock
   persistentVolumeReclaimPolicy: Retain
   csi:
-    driver: file.cache.csi.aws.com
-    volumeHandle: fc-038aadaf79cd9a413
+    driver: filecache.csi.aws.com
+    volumeHandle: fc-0ef97ba968aaae830
     volumeAttributes:
-      dnsname: fc-038aadaf79cd9a413.fsx.us-east-1.amazonaws.com
-      mountname: fsx
-
+      dnsname: fc-0ef97ba968aaae830.fsx.us-east-1.amazonaws.com
+      mountname: uvh2hbev

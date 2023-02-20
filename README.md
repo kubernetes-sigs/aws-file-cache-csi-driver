@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/aws/aws-fsx-csi-driver.svg?branch=master)](https://travis-ci.org/aws/aws-fsx-csi-driver)
+[![Build Status](https://travis-ci.org/kubernetes-sigs/aws-file-cache-csi-driver.svg?branch=master)](https://travis-ci.org/kubernetes-sigs/aws-fsx-csi-driver)
+[![Coverage Status](https://coveralls.io/repos/github/kubernetes-sigs/aws-file-cache-csi-driver/badge.svg?branch=master)](https://coveralls.io/github/kubernetes-sigs/aws-file-cache-csi-driver?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/kubernetes-sigs/aws-file-cache-csi-driver)](https://goreportcard.com/report/github.com/kubernetes-sigs/aws-file-cache-csi-driver)
 
 **WARNING**: This driver is in pre ALPHA currently. This means that there may potentially be backwards compatible breaking changes moving forward. Do NOT use this driver in a production environment in its current state.
 
@@ -16,12 +18,7 @@ This driver is in alpha stage. Basic volume operations that are functional inclu
 |---------------------------------------------------|-------|
 | master branch                                     | yes   |
 
-### Kubernetes Version Compability Matrix
-| AWS File Cache CSI Driver \ Kubernetes Version    | v1.17+ |
-|---------------------------------------------------|--------|
-| master branch                                     | yes    |
-
-## Features
+### Features
 Currently only static provisioning is supported. With static provisioning, a file cache should be created manually, then it could be mounted inside container as a persistence volume (PV) using File Cache CSI Driver.
 
 The following CSI interfaces are implemented:
@@ -29,78 +26,93 @@ The following CSI interfaces are implemented:
 * Node Service: NodePublishVolume, NodeUnpublishVolume, NodeGetCapabilities, NodeGetInfo, NodeGetId
 * Identity Service: GetPluginInfo, GetPluginCapabilities, Probe
 
-## Examples
-This example shows how to make an Amazon File Cache availble inside container for the application to consume. Before this, get yourself familiar with how to setup kubernetes on AWS and [create an Amazon file cache](https://docs.aws.amazon.com/fsx/latest/FileCacheGuide/getting-started.html). And when creating an Amazon File Cache, make sure it is created inside the same VPC as kuberentes cluster or it is accessible through VPC peering.
+## Amazon File Cache CSI Driver on Kubernetes
 
-Once kubernetes cluster and an Amazon File Cache is created, create secret manifest file using [secret.yaml](../deploy/kubernetes/secret.yaml).
+---------
+The following sections are Kubernetes-specific. If you are a Kubernetes user, use the following for driver features, installation steps and examples.
 
-Then create the secret object:
+### Kubernetes Version Compability Matrix
+| AWS File Cache CSI Driver \ Kubernetes Version    | v1.24+ |
+|---------------------------------------------------|--------|
+| master branch                                     | yes    |
+
+### Container Images
+| File Cache CSI Driver Version | Image                                                         |
+|-------------------------------|---------------------------------------------------------------|
+| master branch                 | public.ecr.aws/fsx-csi-driver/aws-filecache-csi-driver:latest |
+
+### Features
+* Static provisioning - Amazon File Cache needs to be created manually first, then it could be mounted inside container as a volume using the Driver.
+* Dynamic provisioning (currently not supported) - uses persistent volume claim (PVC) to let Kubernetes create the Amazon File Cache for you and consumes the volume from inside container.
+* Mount options - mount options can be specified in storageclass to define how the volume should be mounted.
+
+**Notes**:
+* For dynamically provisioned volumes, only one subnet is allowed inside a storageclass's `parameters.subnetId`. This is a [limitation](https://docs.aws.amazon.com/fsx/latest/APIReference/API_FileCacheCreating.html#FSx-Type-FileCacheCreating-SubnetIds) that is enforced by Amazon File Cache.
+
+### Installation
+#### Set up driver permission
+The driver requires IAM permission to talk to Amazon File Cache service to create/delete the filecache on user's behalf. There are several methods to grant driver IAM permission:
+* Using secret object - create an IAM user with proper permission, put that user's credentials in [secret manifest](../deploy/kubernetes/secret.yaml) then deploy the secret.
+
 ```sh
-kubectl apply -f deploy/kubernetes/secret.yaml 
+curl https://raw.githubusercontent.com/kubernetes-sigs/aws-file-cache-csi-driver/master/deploy/kubernetes/secret.yaml > secret.yaml
+# Edit the secret with user credentials
+kubectl apply -f secret.yaml
 ```
 
-Deploy the Amazon file cache CSI driver:
+* Using worker node instance profile - grant all the worker nodes with proper permission by attach policy to the instance profile of the worker.
+```sh
+`kubectl annotate serviceaccount -n kube-system file-cache-csi-controller-sa \
+ eks.amazonaws.com/role-arn=arn:aws:iam::111111111111:role/AmazonEKSFileCacheCSIDriverFullAccess --overwrite=true
+```
 
+
+#### Deploy driver
 ```sh
 kubectl apply -k deploy/kubernetes/base/
 ```
 
-Edit the [persistence volume manifest file](../examples/kubernetes/static_provisioning/specs/pv.yaml):
+TODO: Add helm installation option
 ```sh
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: fc-pv
-spec:
-  capacity:
-    storage: 1200Gi
-  volumeMode: FileCache
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Recycle
-  storageClassName: fc-sc
-  csi:
-    driver: file.cache.csi.aws.com
-    volumeHandle: [FileCacheId]
-    volumeAttributes:
-      dnsname: [DNSName] 
-```
-Replace `volumeHandle` with `FileCacheId` and `dnsname` with `DNSName`. You can get both `FileCacheId` and `DNSName` using AWS CLI:
 
-```sh
-aws fsx describe-file-caches
 ```
 
-Then create PV, persistence volume claim (PVC) and storage class:
-```sh
-kubectl apply -f examples/kubernetes/dynamic_provisioning/specs/storageclass.yaml
-kubectl apply -f examples/kubernetes/dynamic_provisioning/specs/pv.yaml
-kubectl apply -f examples/kubernetes/dynamic_provisioning/specs/claim.yaml
-kubectl apply -f examples/kubernetes/dynamic_provisioning/specs/pod.yaml
-```
 
-After objects are created, verify that pod is running:
 
-```sh
-kubectl get pods
-```
 
-Make sure data is written onto Amazon File Cache:
 
-```sh
-kubectl exec -ti fc-app -- df -h
-kubectl exec -it fc-app -- ls /data
-```
+------------------
+
+
+### Examples
+Before the example, you need to:
+* Get yourself familiar with how to setup Kubernetes on AWS and [create Anmazon File Cache](https://docs.aws.amazon.com/fsx/latest/FileCacheGuide/getting-started.html) if you are using static provisioning.
+* When creating Amazon File Cache, make sure its VPC is accessible from Kuberenetes cluster's VPC and network traffic is allowed by security group.
+    * For FSx for Lustre VPC, you can either create an Amazon File Cache inside the same VPC as Kubernetes cluster or using VPC peering.
+    * For security group, make sure port 988 is allowed for the security groups that are attached the lustre filesystem ENI.
+* Install Amazon File Cache CSI driver following the [Installation](README.md#Installation) steps.
+
+#### Example Links
+* [Static provisioning](examples/kubernetes/static_provisioning/README.md)
+* [Dynamic provisioning](examples/kubernetes/dynamic_provisioning/README.md)
+* [Accessing the filesystem from multiple pods](examples/kubernetes/multiple_pods/README.md)
 
 ## Development
+
+----
 Please go through [CSI Spec](https://github.com/container-storage-interface/spec/blob/master/spec.md) and [General CSI driver development guideline](https://kubernetes-csi.github.io/docs/Development.html) to get some basic understanding of CSI driver before you start.
 
 ### Requirements
-* Golang 1.9+
+* Golang 1.19.0+
+
+### Dependency
+Dependencies are managed through go module. To build the project, first turn on go mod using `export GO111MODULE=on`, to build the project run: `make`
 
 ### Testing
 To execute all unit tests, run: `make test`
 
 ## License
+
+----
 This library is licensed under the Apache 2.0 License. 
 

@@ -1,7 +1,10 @@
 ## Static Provisioning Example
+
+---
+
 This example shows how to make a pre-created Amazon File Cache mounted inside container.
 
-### Edit [Persistent Volume Spec](./specs/pv.yaml)
+### Edit [Persistent Volume Spec](specs/pv.yaml)
 ```
 apiVersion: v1
 kind: PersistentVolume
@@ -17,7 +20,7 @@ spec:
     - flock
   persistentVolumeReclaimPolicy: Recycle
   csi:
-    driver: file.cache.csi.aws.com
+    driver: filecache.csi.aws.com
     volumeHandle: [FileCacheId]
     volumeAttributes:
       dnsname: [DNSName] 

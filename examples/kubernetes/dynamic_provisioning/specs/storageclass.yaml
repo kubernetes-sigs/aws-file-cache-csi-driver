@@ -2,15 +2,14 @@ kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
   name: fc-sc
-provisioner: file.cache.csi.aws.com
+provisioner: filecache.csi.aws.com
 parameters:
-  subnetId: subnet-0eabfaa81fb22bcaf
-  securityGroupIds: sg-068000ccf82dfba88
-  dataRepositoryAssociations: "fileCachePath=/ns1/,dataRepositoryPath=nfs://10.0.92.69/fsx/"
-  fileCacheType: "Lustre"
+  subnetId: "subnet-0d7b5e117ad7b4961"
+  securityGroupIds: "sg-05a37bfe01467059"
+  dataRepositoryAssociations: "FileCachePath=/ns1/,DataRepositoryPath=nfs://10.0.92.69/fsx/,NFS={Version=NFS3} FileCachePath=/ns2/,DataRepositoryPath=nfs://19.12.12.12/fsx/,NFS={Version=NFS3}"
+  fileCacheType(Optional): "Lustre"
   fileCacheTypeVersion(Optional): "2.12"
-  weeklyMaintenanceStartTime: "6:00:00"
-  LustreConfiguration: "{DeploymentType=CACHE_1,MetadataConfiguration=2400,perUnitStorageThroughput=1000}"
-  extraTags: "Tag1=Value1,Tag2=Value2"
+  weeklyMaintenanceStartTime(Optional): "7:09:00"
+  LustreConfiguration(Optional): "DeploymentType=CACHE_1,PerUnitStorageThroughput=1000,MetadataConfiguration={StorageCapacity=2400}"
 mountOptions:
   - flock
