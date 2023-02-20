@@ -3,6 +3,6 @@
 apiVersion: storage.k8s.io/v1
 kind: CSIDriver
 metadata:
-  name: file.cache.csi.aws.com
+  name: filecache.csi.aws.com
 spec:
   attachRequired: false
