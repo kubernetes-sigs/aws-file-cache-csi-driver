@@ -5,8 +5,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: ""
+  storageClassName: fc-sc
   resources:
     requests:
       storage: 1200Gi
-  volumeName: fc-pv

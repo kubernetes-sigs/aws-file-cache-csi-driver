@@ -4,12 +4,14 @@ metadata:
   name: fc-sc
 provisioner: filecache.csi.aws.com
 parameters:
-  subnetId: "subnet-0d7b5e117ad7b4961"
-  securityGroupIds: "sg-05a37bfe01467059"
-  dataRepositoryAssociations: "FileCachePath=/ns1/,DataRepositoryPath=nfs://10.0.92.69/fsx/,NFS={Version=NFS3} FileCachePath=/ns2/,DataRepositoryPath=nfs://19.12.12.12/fsx/,NFS={Version=NFS3}"
-  fileCacheType(Optional): "Lustre"
-  fileCacheTypeVersion(Optional): "2.12"
-  weeklyMaintenanceStartTime(Optional): "7:09:00"
-  LustreConfiguration(Optional): "DeploymentType=CACHE_1,PerUnitStorageThroughput=1000,MetadataConfiguration={StorageCapacity=2400}"
+  subnetId: subnet-074ea3b7386e4802b
+  securityGroupIds: sg-046ad64768e4cf756,sg-02c92284b2c124cb2
+  dataRepositoryAssociations: "FileCachePath=/ns1/,DataRepositoryPath=nfs://10.0.92.69/,NFS={Version=NFS3},DataRepositorySubdirectories=[subdir1,subdir2,subdir3]"
+  fileCacheType: "LUSTRE"
+  fileCacheTypeVersion: "2.12"
+  weeklyMaintenanceStartTime: "7:00:00"
+  LustreConfiguration: "DeploymentType=CACHE_1,PerUnitStorageThroughput=1000,MetadataConfiguration={StorageCapacity=2400}"
+  copyTagsToDataRepositoryAssociations: "true"
+  extraTags: "Tag1=Value1,Tag2=Value2"
 mountOptions:
   - flock

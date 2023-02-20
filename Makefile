@@ -1,3 +1,17 @@
+#Copyright 2022 The Kubernetes Authors
+#
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+#Unless required by applicable law or agreed to in writing, software
+#distributed under the License is distributed on an "AS IS" BASIS,
+#WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#See the License for the specific language governing permissions and
+#limitations under the License.
+
 VERSION=0.1.0
 
 PKG=github.com/kubernetes-sigs/aws-file-cache-csi-driver
@@ -12,7 +26,7 @@ GOPATH=$(shell go env GOPATH)
 GOOS=$(shell go env GOOS)
 GOBIN=$(shell pwd)/bin
 
-IMAGE?=648284600874.dkr.ecr.us-east-1.amazonaws.com/aws-file-cache-csi-driver
+IMAGE?=651262257939.dkr.ecr.us-east-1.amazonaws.com/file-cache-dynamic-provisioning
 TAG?=$(GIT_COMMIT)
 
 OUTPUT_TYPE?=docker
