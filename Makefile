@@ -12,7 +12,7 @@ GOPATH=$(shell go env GOPATH)
 GOOS=$(shell go env GOOS)
 GOBIN=$(shell pwd)/bin
 
-IMAGE?=648284600874.dkr.ecr.us-east-1.amazonaws.com/aws-file-cache-csi-driver
+IMAGE?=651262257939.dkr.ecr.us-east-1.amazonaws.com/file-cache-dynamic-provisioning
 TAG?=$(GIT_COMMIT)
 
 OUTPUT_TYPE?=docker

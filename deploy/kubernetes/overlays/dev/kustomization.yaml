@@ -1,0 +1,6 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+images:
+  - name: 651262257939.dkr.ecr.us-east-1.amazonaws.com/file-cache-dynamic-provisioning
+    newName: 651262257939.dkr.ecr.us-east-1.amazonaws.com/file-cache-dynamic-provisioning
+    newTag: v0.0.20

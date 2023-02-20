@@ -32,8 +32,8 @@ func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	}
 
 	context := req.GetVolumeContext()
-	dnsname := context["dnsname"]
-	mountname := context["mountname"]
+	dnsname := context[volumeContextDnsName]
+	mountname := context[volumeContextMountName]
 
 	if len(dnsname) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "dnsname is not provided")
@@ -161,25 +161,6 @@ func (d *Driver) NodeGetInfo(ctx context.Context, req *csi.NodeGetInfoRequest) (
 	}, nil
 }
 
-func (d *Driver) isValidVolumeCapabilities(volCaps []*csi.VolumeCapability) bool {
-	hasSupport := func(cap *csi.VolumeCapability) bool {
-		for _, c := range volumeCaps {
-			if c.GetMode() == cap.AccessMode.GetMode() {
-				return true
-			}
-		}
-		return false
-	}
-
-	foundAll := true
-	for _, c := range volCaps {
-		if !hasSupport(c) {
-			foundAll = false
-		}
-	}
-	return foundAll
-}
-
 // isMounted checks if target is mounted. It does NOT return an error if target
 // doesn't exist.
 func (d *Driver) isMounted(source string, target string) (bool, error) {
@@ -222,4 +203,3 @@ func (d *Driver) isMounted(source string, target string) (bool, error) {
 
 	return !notMnt, nil
 }
-

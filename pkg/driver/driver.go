@@ -37,14 +37,18 @@ type Driver struct {
 }
 
 func NewDriver(endpoint string) *Driver {
-	cloud, err := cloud.NewCloud()
+	metadata, err := cloud.NewMetadata()
 	if err != nil {
 		klog.Fatalln(err)
 	}
 
+	region := metadata.GetRegion()
+
+	cloud := cloud.NewCloud(region)
+
 	return &Driver{
 		endpoint: endpoint,
-		nodeID:   cloud.GetMetadata().GetInstanceID(),
+		nodeID:   metadata.GetInstanceID(),
 		cloud:    cloud,
 		mounter:  newNodeMounter(),
 	}
@@ -74,6 +78,7 @@ func (d *Driver) Run() error {
 	d.srv = grpc.NewServer(opts...)
 
 	csi.RegisterIdentityServer(d.srv, d)
+	csi.RegisterControllerServer(d.srv, d)
 	csi.RegisterNodeServer(d.srv, d)
 
 	klog.Infof("Listening for connections on address: %#v", listener.Addr())
