@@ -1,0 +1,72 @@
+# Default values for helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# TODO: Change image
+image:
+  repository: 651262257939.dkr.ecr.us-east-1.amazonaws.com/file-cache-dynamic-provisioning
+  tag: v0.0.26
+  pullPolicy: IfNotPresent
+
+csidriver:
+  fsGroupPolicy: ReadWriteOnceWithFSType
+
+sidecars:
+  livenessProbe:
+    image:
+      repository: public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe
+      tag: v2.9.0-eks-1-23-13
+      pullPolicy: IfNotPresent
+    resources: {}
+  nodeDriverRegistrar:
+    image:
+      repository: public.ecr.aws/eks-distro/kubernetes-csi/node-driver-registrar
+      tag: v2.7.0-eks-1-23-13
+      pullPolicy: IfNotPresent
+    resources: {}
+  provisioner:
+    image:
+      repository: public.ecr.aws/eks-distro/kubernetes-csi/external-provisioner
+      tag: v3.4.0-eks-1-23-13
+      pullPolicy: IfNotPresent
+    resources: {}
+
+controller:
+  nodeSelector: {}
+  replicaCount: 2
+  resources: {}
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    ## Enable if EKS IAM for SA is used
+    #  eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/fsx-csi-role
+    name: file-cache-csi-controller-sa
+    annotations: {}
+  tolerations: []
+  podAnnotations: {}
+
+node:
+  nodeSelector: {}
+  resources: {}
+  dnsPolicy: ClusterFirst
+  dnsConfig:
+    {}
+    # Example config which uses the AWS nameservers
+    # dnsPolicy: "None"
+    # dnsConfig:
+    #   nameservers:
+  #     - 169.254.169.253
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    ## Enable if EKS IAM for SA is used
+    #  eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/fsx-csi-role
+    name: file-cache-csi-node-sa
+    annotations: {}
+  tolerateAllTaints: false
+  tolerations: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+imagePullSecrets: []

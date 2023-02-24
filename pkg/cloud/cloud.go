@@ -65,10 +65,10 @@ const (
 	DefaultMetadataStorageCapacity  = 2400
 	DefaultPerUnitStorageThroughput = 1000
 
-	// PollCheckInterval specifies the interval to check if filesystem is ready;
+	// PollCheckInterval specifies the interval to check if file cache is ready;
 	// needs to be shorter than the provisioner timeout
 	PollCheckInterval = 30 * time.Second
-	// PollCheckTimeout specifies the time limit for polling DescribeFileSystems
+	// PollCheckTimeout specifies the time limit for polling DescribeFileCaches
 	// for a completed create/update operation.
 	PollCheckTimeout = 15 * time.Minute
 )
@@ -84,7 +84,7 @@ var (
 	// file caches are found with the same volume name.
 	ErrMultiFileCaches = errors.New("Multiple filecaches with same ID")
 
-	// ErrFcExistsDiffSize is an error that is returned if a filesystem
+	// ErrFcExistsDiffSize is an error that is returned if a file cache
 	// exists with a given ID, but a different capacity is requested.
 	ErrFcExistsDiffSize = errors.New("There is already a disk with same ID and different size")
 
@@ -164,13 +164,7 @@ func (c *cloud) CreateFileCache(ctx context.Context, volumeName string, fileCach
 		draConfiguration := &fsx.FileCacheDataRepositoryAssociation{}
 
 		configSlices := util.SplitUnnestedCommas(slice)
-		configMap := make(map[string]string)
-		for _, configSlice := range configSlices {
-			configSplit := strings.SplitN(configSlice, "=", 2)
-			configKey := configSplit[0]
-			configValue := configSplit[1]
-			configMap[configKey] = configValue
-		}
+		configMap := util.MapValues(configSlices)
 
 		if dataRepositoryPath, ok := configMap[DRAOptionsDataRepositoryPath]; ok {
 			draConfiguration.SetDataRepositoryPath(dataRepositoryPath)
@@ -187,13 +181,7 @@ func (c *cloud) CreateFileCache(ctx context.Context, volumeName string, fileCach
 
 		if nfsConfig, ok := configMap[DRAOptionsNFSConfiguration]; ok {
 			nfsSlices := util.SplitUnnestedCommas(nfsConfig[1 : len(nfsConfig)-1])
-			nfsMap := make(map[string]string)
-			for _, nfsSlice := range nfsSlices {
-				nfsSplit := strings.SplitN(nfsSlice, "=", 2)
-				nfsKey := nfsSplit[0]
-				nfsValue := nfsSplit[1]
-				nfsMap[nfsKey] = nfsValue
-			}
+			nfsMap := util.MapValues(nfsSlices)
 
 			nfsConfiguration := &fsx.FileCacheNFSConfiguration{}
 
@@ -250,13 +238,7 @@ func (c *cloud) CreateFileCache(ctx context.Context, volumeName string, fileCach
 
 	lustreConfiguration := &fsx.CreateFileCacheLustreConfiguration{}
 	//map for lustre configuration values
-	configMap := make(map[string]string)
-	for _, configOption := range fileCacheOptions.LustreConfiguration {
-		configSplit := strings.SplitN(configOption, "=", 2)
-		configKey := configSplit[0]
-		configValue := configSplit[1]
-		configMap[configKey] = configValue
-	}
+	configMap := util.MapValues(fileCacheOptions.LustreConfiguration)
 
 	if deploymentType, ok := configMap[LustreConfigOptionsDeploymentType]; ok {
 		lustreConfiguration.SetDeploymentType(deploymentType)
@@ -268,7 +250,7 @@ func (c *cloud) CreateFileCache(ctx context.Context, volumeName string, fileCach
 		storageCapacityPair := strings.Split(metadataConfiguration[1:len(metadataConfiguration)-1], "=")
 		metadataStorageCapacity, err := strconv.ParseInt(storageCapacityPair[1], 10, 64)
 		if err != nil {
-			return nil, fmt.Errorf("invalid input for MetadataConfiguration StorageCapacity: %s", err)
+			return nil, fmt.Errorf("Invalid input for MetadataConfiguration StorageCapacity: %s", err)
 		}
 		metadataConfig := &fsx.FileCacheLustreMetadataConfiguration{StorageCapacity: aws.Int64(metadataStorageCapacity)}
 		lustreConfiguration.SetMetadataConfiguration(metadataConfig)
@@ -280,7 +262,7 @@ func (c *cloud) CreateFileCache(ctx context.Context, volumeName string, fileCach
 	if perUnitStorageThroughput, ok := configMap[LustreConfigOptionsPerUnitStorageThroughput]; ok {
 		throughput, err := strconv.ParseInt(perUnitStorageThroughput, 10, 64)
 		if err != nil {
-			return nil, fmt.Errorf("invalid input for MetadataConfiguration PerUnitStorageThroughput: %s", err)
+			return nil, fmt.Errorf("Invalid input for MetadataConfiguration PerUnitStorageThroughput: %s", err)
 		}
 		lustreConfiguration.SetPerUnitStorageThroughput(throughput)
 	} else {
@@ -377,14 +359,14 @@ func (c *cloud) WaitForFileCacheAvailable(ctx context.Context, fileCacheId strin
 		if err != nil {
 			return true, err
 		}
-		klog.V(2).Infof("WaitForFileCacheAvailable filesystem %q status is: %q", fileCacheId, *fc.Lifecycle)
+		klog.V(2).Infof("WaitForFileCacheAvailable file cache %q status is: %q", fileCacheId, *fc.Lifecycle)
 		switch *fc.Lifecycle {
 		case "AVAILABLE":
 			return true, nil
 		case "CREATING":
 			return false, nil
 		default:
-			return true, fmt.Errorf("unexpected state for filesystem %s: %q", fileCacheId, *fc.Lifecycle)
+			return true, fmt.Errorf("Unexpected state for file cache %s: %q", fileCacheId, *fc.Lifecycle)
 		}
 	})
 

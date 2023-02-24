@@ -1,26 +1,38 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: file-cache-csi-controller
   labels:
-    app.kubernetes.io/name: aws-file-cache-csi-driver
+    {{- include "aws-file-cache-csi-driver.labels" . | nindent 4 }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.controller.replicaCount }}
   selector:
     matchLabels:
       app: file-cache-csi-controller
-      app.kubernetes.io/name: aws-file-cache-csi-driver
+      {{- include "aws-file-cache-csi-driver.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.controller.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         app: file-cache-csi-controller
-        app.kubernetes.io/name: aws-file-cache-csi-driver
+        {{- include "aws-file-cache-csi-driver.labels" . | nindent 8 }}
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       nodeSelector:
         kubernetes.io/os: linux
+        {{- with .Values.controller.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       hostNetwork: true
-      serviceAccountName: file-cache-csi-controller-sa
+      serviceAccountName: {{ .Values.controller.serviceAccount.name }}
       priorityClassName: system-cluster-critical
       tolerations:
         - key: CriticalAddonsOnly
@@ -28,10 +40,13 @@ spec:
         - operator: Exists
           effect: NoExecute
           tolerationSeconds: 300
+        {{- with .Values.controller.tolerations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: file-cache-plugin
-          image: 651262257939.dkr.ecr.us-east-1.amazonaws.com/file-cache-dynamic-provisioning:v0.0.26
-          imagePullPolicy: IfNotPresent
+          image: {{ printf "%s:%s" .Values.image.repository (default (printf "v%s" .Chart.AppVersion) (toString .Values.image.tag)) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - --endpoint=$(CSI_ENDPOINT)
             - --v=5
@@ -53,8 +68,12 @@ spec:
             timeoutSeconds: 3
             periodSeconds: 2
             failureThreshold: 5
+          {{- with .Values.controller.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
         - name: csi-provisioner
-          image: public.ecr.aws/eks-distro/kubernetes-csi/external-provisioner:v3.4.0-eks-1-23-13
+          image: {{ printf "%s:%s" .Values.sidecars.provisioner.image.repository .Values.sidecars.provisioner.image.tag }}
           args:
             - --csi-address=$(ADDRESS)
             - --timeout=5m
@@ -66,14 +85,22 @@ spec:
           volumeMounts:
             - name: socket-dir
               mountPath: /var/lib/csi/sockets/pluginproxy/
+          {{- with default .Values.controller.resources .Values.sidecars.provisioner.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
         - name: liveness-probe
-          image: public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe:v2.9.0-eks-1-23-13
+          image: {{ printf "%s:%s" .Values.sidecars.livenessProbe.image.repository .Values.sidecars.livenessProbe.image.tag }}
           args:
             - --csi-address=/csi/csi.sock
             - --health-port=9910
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
+          {{- with default .Values.controller.resources .Values.sidecars.livenessProbe.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       volumes:
         - name: socket-dir
           emptyDir: {}
