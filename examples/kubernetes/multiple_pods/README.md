@@ -1,7 +1,5 @@
 ## Multiple Pods Read Write Many
 
----
-
 This example shows how to create a dynamically provisioned Amazon File Cache PV and access it from multiple pods with ReadWriteMany access mode. If you are using static provisioning, following steps to setup static provisioned PV with access mode set to ReadWriteMany and the rest of steps of consuming the volume from pods are similar.
 
 ### Edit [StorageClass](specs/storageclass.yaml)
