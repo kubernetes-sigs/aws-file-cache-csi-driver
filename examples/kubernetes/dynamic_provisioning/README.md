@@ -1,8 +1,5 @@
 ## Dynamic Provisioning Example
 
----
-
-*~Not yet supported~*
 
 This example shows how to create an Amazon File Cache using persistence volume claim (PVC) and consumes it from a pod. Please see the [CreateFileCache API Reference](https://docs.aws.amazon.com/fsx/latest/APIReference/API_CreateFileCache.html#FSx-CreateFileCache-request-DataRepositoryAssociations) for more information.
 

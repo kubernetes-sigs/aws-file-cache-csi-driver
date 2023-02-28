@@ -1,7 +1,5 @@
 ## Static Provisioning Example
 
----
-
 This example shows how to make a pre-created Amazon File Cache mounted inside container.
 
 ### Edit [Persistent Volume Spec](specs/pv.yaml)
