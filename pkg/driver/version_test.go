@@ -42,7 +42,7 @@ func TestGetVersion(t *testing.T) {
 func TestGetVersionJSON(t *testing.T) {
 	version, err := GetVersionJSON()
 	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
+		t.Fatalf("Unexpected error: %v", err)
 	}
 	expected := fmt.Sprintf(`{
   "driverVersion": "",

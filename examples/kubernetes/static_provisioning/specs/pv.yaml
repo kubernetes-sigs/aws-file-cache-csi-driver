@@ -17,4 +17,3 @@ spec:
     volumeAttributes:
       dnsname: fc-0ef97ba968aaae830.fsx.us-east-1.amazonaws.com
       mountname: uvh2hbev
-

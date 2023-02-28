@@ -66,7 +66,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		return nil, status.Error(codes.InvalidArgument, "Volume capabilities not supported")
 	}
 
-	// create a new volume with idempotency, which is handled by `CreateFileSystem`
+	// create a new volume with idempotency, which is handled by `CreateFileCache`
 	volumeParams := req.GetParameters()
 	subnetId := volumeParams[volumeParamsSubnetId]
 	securityGroupIds := volumeParams[volumeParamsSecurityGroupIds]
