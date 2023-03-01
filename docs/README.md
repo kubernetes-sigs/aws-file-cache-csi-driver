@@ -31,9 +31,9 @@ The following sections are Kubernetes-specific. If you are a Kubernetes user, us
 | v0.1.0                                         | yes    |
 
 ### Container Images
-| File Cache CSI Driver Version | Image                                                               |
-|-------------------------------|---------------------------------------------------------------------|
-| v0.1.0                        | public.ecr.aws/file-cache-csi-driver/aws-file-cache-csi-driver:v0.1.0 |
+| File Cache CSI Driver Version | Image                                                          |
+|-------------------------------|----------------------------------------------------------------|
+| v0.1.0                        | public.ecr.aws/fsx-csi-driver/aws-file-cache-csi-driver:v0.1.0 |
 
 ### Features
 * Static provisioning - Amazon File Cache needs to be created manually first, then it could be mounted inside container as a volume using the Driver.
@@ -44,9 +44,9 @@ The following sections are Kubernetes-specific. If you are a Kubernetes user, us
 * For dynamically provisioned volumes, only one subnet is allowed inside a storageclass's `parameters.subnetId`. This is a [limitation](https://docs.aws.amazon.com/fsx/latest/APIReference/API_FileCacheCreating.html#FSx-Type-FileCacheCreating-SubnetIds) that is enforced by Amazon File Cache.
 
 ### Installation
-#### 1. Set a few variables to use in the remaining steps. Replace `my-csi-filecache` with the name of the test cluster you want to create and `region-code` with the AWS Region that you want to create your test cluster in.
+#### 1. Set a few variables to use in the remaining steps. Replace `my-csi-file-cache` with the name of the test cluster you want to create and `region-code` with the AWS Region that you want to create your test cluster in.
 ```shell
-export cluster_name=my-csi-filecache
+export cluster_name=my-csi-file-cache
 export region_code=region-code
 ```
 
@@ -61,13 +61,13 @@ eksctl create cluster \
 ```
 
 #### 3. Set up driver permission
-The driver requires IAM permission to talk to Amazon File Cache service to create/delete the filecache on user's behalf. There are several methods to grant driver IAM permission:
+The driver requires IAM permission to talk to Amazon File Cache service to create/delete the file cache on user's behalf. There are several methods to grant driver IAM permission:
 
 * Create a Kubernetes service account for the driver and attach the `AmazonFSxFullAccess` AWS-managed policy to the service account with the following command. If your cluster is in the AWS GovCloud (US-East) or AWS GovCloud (US-West) AWS Regions, then replace `arn:aws:` with `arn:aws-us-gov:`.
 
 ```shell
 eksctl create iamserviceaccount \
-    --name filecache-csi-controller-sa \
+    --name file-cache-csi-controller-sa \
     --namespace kube-system \
     --cluster $cluster_name \
     --attach-policy-arn arn:aws:iam::aws:policy/AmazonFSxFullAccess \
@@ -175,7 +175,7 @@ eksctl create iamserviceaccount \
 
 #### 4. Deploy driver
 ```sh
-kubectl apply -k "github.com/kubernetes-sigs/aws-file-cache-csi-driver/deploy/kubernetes/base/?ref=HEAD"
+kubectl apply -k "github.com/kubernetes-sigs/aws-file-cache-csi-driver/deploy/kubernetes/overlays/stable/?ref=HEAD"
 ```
 
 Alternatively, you could also install the driver using helm:

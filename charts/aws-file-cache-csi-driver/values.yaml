@@ -2,10 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# TODO: Change image
 image:
-  repository: 651262257939.dkr.ecr.us-east-1.amazonaws.com/file-cache-dynamic-provisioning
-  tag: v0.0.26
+  repository: public.ecr.aws/fsx-csi-driver/aws-file-cache-csi-driver
+  tag: v0.1.0
   pullPolicy: IfNotPresent
 
 csidriver:
@@ -39,7 +38,7 @@ controller:
     # Specifies whether a service account should be created
     create: true
     ## Enable if EKS IAM for SA is used
-    #  eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/fsx-csi-role
+    #  eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/file-cache-csi-role
     name: file-cache-csi-controller-sa
     annotations: {}
   tolerations: []
@@ -60,7 +59,7 @@ node:
     # Specifies whether a service account should be created
     create: true
     ## Enable if EKS IAM for SA is used
-    #  eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/fsx-csi-role
+    #  eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/file-cache-csi-role
     name: file-cache-csi-node-sa
     annotations: {}
   tolerateAllTaints: false

@@ -32,7 +32,7 @@ spec:
         - name: file-cache-plugin
           securityContext:
             privileged: true
-          image: 651262257939.dkr.ecr.us-east-1.amazonaws.com/file-cache-dynamic-provisioning:v0.0.26
+          image: public.ecr.aws/fsx-csi-driver/aws-file-cache-csi-driver:v0.1.0
           imagePullPolicy: IfNotPresent
           args:
             - --endpoint=$(CSI_ENDPOINT)
