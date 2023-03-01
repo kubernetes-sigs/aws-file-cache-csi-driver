@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve File Cache CSI Driver
+about: Create a report to help us improve Amazon File Cache CSI Driver
 labels: 
 
 ---
@@ -18,4 +18,3 @@ labels:
 **Environment**
 - Kubernetes version (use `kubectl version`):
 - Driver version:
-
