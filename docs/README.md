@@ -183,7 +183,9 @@ Alternatively, you could also install the driver using helm:
 
 TODO: Add helm installation option
 ```sh
-
+helm repo add aws-file-cache-csi-driver https://kubernetes-sigs.github.io/aws-file-cache-csi-driver/
+helm repo update
+helm upgrade --install aws-file-cache-csi-driver --namespace kube-system aws-file-cache-csi-driver/aws-file-cache-csi-driver
 ```
 
 ### Examples
