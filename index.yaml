@@ -1,3 +1,25 @@
 apiVersion: v1
-entries: {}
-generated: "2023-03-01T20:40:00.449138958Z"
+entries:
+  aws-file-cache-csi-driver:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2023-03-02T20:13:16.997054555Z"
+    description: A Helm chart for Amazon File Cache CSI Driver
+    digest: 26b42597a9ad28b798601ff3da4ad40fcb946cfd9f159beeb302f325022f28bf
+    home: https://github.com/kubernetes-sigs/aws-file-cache-csi-driver/
+    keywords:
+    - aws
+    - file
+    - cache
+    - csi
+    kubeVersion: '>=1.17.0-0'
+    maintainers:
+    - name: Kubernetes Authors
+      url: https://github.com/kubernetes-sigs/aws-file-cache-csi-driver/
+    name: aws-file-cache-csi-driver
+    sources:
+    - https://github.com/kubernetes-sigs/aws-file-cache-csi-driver/
+    urls:
+    - https://github.com/kubernetes-sigs/aws-file-cache-csi-driver/releases/download/helm-chart-aws-file-cache-csi-driver-0.1.0/aws-file-cache-csi-driver-0.1.0.tgz
+    version: 0.1.0
+generated: "2023-03-02T20:13:16.996216395Z"
