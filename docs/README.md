@@ -181,7 +181,6 @@ kubectl apply -k "github.com/kubernetes-sigs/aws-file-cache-csi-driver/deploy/ku
 Alternatively, you could also install the driver using helm:
 
 
-TODO: Add helm installation option
 ```sh
 helm repo add aws-file-cache-csi-driver https://kubernetes-sigs.github.io/aws-file-cache-csi-driver/
 helm repo update
@@ -190,16 +189,16 @@ helm upgrade --install aws-file-cache-csi-driver --namespace kube-system aws-fil
 
 ### Examples
 Before the example, you need to:
-* Get yourself familiar with how to setup Kubernetes on AWS and [create Anmazon File Cache](https://docs.aws.amazon.com/fsx/latest/FileCacheGuide/getting-started.html) if you are using static provisioning.
+* Get yourself familiar with how to setup Kubernetes on AWS and [create Amazon File Cache](https://docs.aws.amazon.com/fsx/latest/FileCacheGuide/getting-started.html) if you are using static provisioning.
 * When creating Amazon File Cache, make sure its VPC is accessible from Kuberenetes cluster's VPC and network traffic is allowed by security group.
     * For Amazon File Cache VPC, you can either create an Amazon File Cache inside the same VPC as Kubernetes cluster or using VPC peering.
     * For security group, make sure port 988 is allowed for the security groups that are attached the file cache ENI.
 * Install Amazon File Cache CSI driver following the [Installation](README.md#Installation) steps.
 
 #### Example Links
-* [Static provisioning](examples/kubernetes/static_provisioning/README.md)
-* [Dynamic provisioning](examples/kubernetes/dynamic_provisioning/README.md)
-* [Accessing the file cache from multiple pods](examples/kubernetes/multiple_pods/README.md)
+* [Static provisioning](../examples/kubernetes/static_provisioning/README.md)
+* [Dynamic provisioning](../examples/kubernetes/dynamic_provisioning/README.md)
+* [Accessing the file cache from multiple pods](../examples/kubernetes/multiple_pods/README.md)
 
 ## Development
 
