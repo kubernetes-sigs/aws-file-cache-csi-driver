@@ -175,7 +175,7 @@ eksctl create iamserviceaccount \
 
 #### 4. Deploy driver
 ```sh
-kubectl apply -k "github.com/kubernetes-sigs/aws-file-cache-csi-driver/deploy/kubernetes/overlays/stable/?ref=HEAD"
+kubectl apply -k "github.com/kubernetes-sigs/aws-file-cache-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-0.1"
 ```
 
 Alternatively, you could also install the driver using helm:
