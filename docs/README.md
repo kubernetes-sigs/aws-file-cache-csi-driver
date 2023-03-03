@@ -272,7 +272,7 @@ StorageClass:  fc-sc
 Status:        Bound
 ```
 
-***Note:** The `Status` may show as `Pending` for 5-10 minutes, before changing to `Bound`. Don't continue with the next step until the `Status` is `Bound`. If the `Status` shows `Pending` for more than 10 minutes, use warning messages in the `Events` as reference for addressing any problems.*
+***Note:** The `Status` may show as `Pending` for 10-15 minutes, before changing to `Bound`. Don't continue with the next step until the `Status` is `Bound`. If the `Status` shows `Pending` for more than 15 minutes, use warning messages in the `Events` as reference for addressing any problems.*
 
 10. Deploy the sample application.
 ```shell
