@@ -100,7 +100,7 @@ type FileCache struct {
 	MountName                string
 	FileCacheType            string
 	FileCacheTypeVersion     string
-	perUnitStorageThroughput int64
+	PerUnitStorageThroughput int64
 }
 
 type FileCacheOptions struct {
@@ -309,7 +309,7 @@ func (c *cloud) CreateFileCache(ctx context.Context, volumeName string, fileCach
 		MountName:                mountName,
 		FileCacheType:            *output.FileCache.FileCacheType,
 		FileCacheTypeVersion:     *output.FileCache.FileCacheTypeVersion,
-		perUnitStorageThroughput: perUnitStorageThroughput,
+		PerUnitStorageThroughput: perUnitStorageThroughput,
 	}, nil
 }
 
@@ -349,7 +349,7 @@ func (c *cloud) DescribeFileCache(ctx context.Context, fileCacheId string) (*Fil
 		MountName:                mountName,
 		FileCacheType:            *fc.FileCacheType,
 		FileCacheTypeVersion:     *fc.FileCacheTypeVersion,
-		perUnitStorageThroughput: perUnitStorageThroughput,
+		PerUnitStorageThroughput: perUnitStorageThroughput,
 	}, nil
 }
 

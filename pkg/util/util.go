@@ -68,8 +68,7 @@ func GiBToBytes(volumeSizeGiB int64) int64 {
 	return volumeSizeGiB * GiB
 }
 
-// SplitUnnestedCommas TODO: potential to improve this function with regex, but should be rigorously tested with
-// FileCacheDataRepositoryAssociation with specified subdirectory paths & NFS Configuration with DNS IPs before merging
+// SplitUnnestedCommas TODO: potential to improve this function with regex, use sanity tests to confirm validity of function
 func SplitUnnestedCommas(input string) []string {
 	leftCurly := []int{}
 	leftSquare := []int{}

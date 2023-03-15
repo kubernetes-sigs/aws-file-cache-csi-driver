@@ -16,7 +16,7 @@ spec:
     - ReadWriteMany
   mountOptions:
     - flock
-  persistentVolumeReclaimPolicy: Recycle
+  persistentVolumeReclaimPolicy: Retain
   csi:
     driver: filecache.csi.aws.com
     volumeHandle: [FileCacheId]
