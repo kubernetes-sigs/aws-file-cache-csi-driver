@@ -1,6 +1,4 @@
 # v0.1.0
-
-[//]: # (TODO: Create v0.1.0 branch)
 [Documentation](https://github.com/kubernetes-sigs/aws-file-cache-csi-driver/blob/v0.1.0/docs/README.md)
 
 ### Notable changes

@@ -128,7 +128,7 @@ func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest)
 		case cloud.ErrFcExistsDiffSize:
 			return nil, status.Error(codes.AlreadyExists, err.Error())
 		default:
-			return nil, status.Errorf(codes.Internal, "Could not create volume %q: %v")
+			return nil, status.Errorf(codes.Internal, "Could not create volume %q: %v", volName, err)
 		}
 	}
 
