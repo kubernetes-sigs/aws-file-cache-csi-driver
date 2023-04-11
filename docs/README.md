@@ -5,7 +5,10 @@
 
 The [Amazon File Cache](https://docs.aws.amazon.com/fsx/latest/FileCacheGuide/) Container Storage Interface (CSI) Driver provides a [CSI](https://github.com/container-storage-interface/spec/blob/master/spec.md) interface used by container orchestrators to manage the lifecycle of Amazon file cache volumes.
 
-### CSI Specification Compability Matrix
+### Troubleshooting
+For help with troubleshooting, please refer to our [troubleshooting doc](https://github.com/kubernetes-sigs/aws-fsx-csi-driver/blob/master/docs/troubleshooting.md).
+
+### CSI Specification Compatibility Matrix
 | AWS File Cache CSI Driver \ CSI Version | v1.x.x |
 |-----------------------------------------|--------|
 | v0.1.0                                  | yes    |
@@ -21,7 +24,7 @@ The following CSI interfaces are implemented:
 
 The following sections are Kubernetes-specific. If you are a Kubernetes user, use the following for driver features, installation steps and examples.
 
-### Kubernetes Version Compability Matrix
+### Kubernetes Version Compatibility Matrix
 | AWS File Cache CSI Driver \ Kubernetes Version | v1.22+ |
 |------------------------------------------------|--------|
 | v0.1.0                                         | yes    |
