@@ -4,9 +4,9 @@ name: aws-file-cache-csi-driver
 description: A Helm chart for Amazon File Cache CSI Driver
 version: 0.1.0
 kubeVersion: ">=1.17.0-0"
-home: https://github.com/jacobwolfaws/aws-file-cache-csi-driver
+home: https://github.com/kubernetes-sigs/aws-file-cache-csi-driver
 sources:
-  - https://github.com/jacobwolfaws/aws-file-cache-csi-driver
+  - https://github.com/kubernetes-sigs/aws-file-cache-csi-driver
 keywords:
   - aws
   - file
